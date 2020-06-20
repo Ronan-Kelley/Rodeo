@@ -66,8 +66,20 @@ fn main() -> std::io::Result<()> {
         "sync-local" | "sync_local" | "local_sync" | "local-sync" | "lsync" => settings.sync_local(),
         "sync-remote" | "sync_remote" | "remote_sync" | "remote-sync" | "rsync" => settings.sync_remote(),
         "sync-full" | "sync_full" | "full_sync" | "full-sync" | "fsync" => settings.sync_full(),
+        "help" | "h" => print_help(),
         _ => println!("invalid command \"{}\". Stop.", command),
     }
 
     Ok(())
+}
+
+pub fn print_help() {
+    println!("\
+        deploy | d:\n\tdeploys all dotfiles referenced in your config in your local dotfiles repo to your system, overwriting existing files\n\n\
+        collect | c:\n\tcollects all dotfiles referenced in your config that are active in your system to your local dotfiles repo, overwriting existing files\n\n\
+        sync[-/_]local | local[-/_]sync | lsync:\n\treplaces all dotfiles referenced in your config, both deployed and collected, with whichever respective file was last modified\n\n\
+        sync[-/_]remote | remote[-/_]sync | rsync:\n\tpulls, commits changes, and pushes in the context of your local repo's directory. Works with any git repository.\n\n\
+        sync[-/_]full | full[-/_]sync | fsync:\n\tpulls from remote git repo, runs a local sync, then commits changes and pushes back up to remote. Works with any git repository.\n\n\
+        help | h:\n\tprint this text\n\
+        ");
 }
