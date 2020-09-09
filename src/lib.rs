@@ -1,3 +1,5 @@
+mod options;
+
 use std::fs;
 use std::path;
 use std::io::prelude::*;
@@ -82,6 +84,12 @@ impl Settings {
         }
 
         self.git_push();
+    }
+
+    pub fn list_programs(&self) {
+        for i in self.programs.iter() {
+            println!("{}", i.name);
+        }
     }
 
     // helper methods //

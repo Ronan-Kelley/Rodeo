@@ -17,7 +17,7 @@ fn main() -> std::io::Result<()> {
         Err(_) => format!("{}/.config/rodeo/rodeo.toml", user_home)
     };
 
-    // check for existance of config file. If it exists, open it, if not, fall back on default
+    // check for existence of config file. If it exists, open it, if not, fall back on default
     // location.
     let config_file = match File::open(&config_file_path) {
         // if the file at the given path is invalid or does not exist, attempt to use the default
@@ -25,7 +25,7 @@ fn main() -> std::io::Result<()> {
         Ok(val) => val,
         Err(_) => {
             // inform user of the error, attempt to use the default path. This will ensure the
-            // existance of a folder at ~/.config/rodeo if ~/.config exists and user has
+            // existence of a folder at ~/.config/rodeo if ~/.config exists and user has
             // permissions. If ~/.config does not exist or the user does not have permissions, the
             // program will panic. Finally, if rodeo.toml exists it will be opened and loaded.
             // If no rodeo.toml file exists at that location, it will be created.
@@ -35,6 +35,9 @@ fn main() -> std::io::Result<()> {
                 Ok(_) => File::create(&config_file_path)?,
                 Err(_) => match File::create(&config_file_path) {
                     Ok(_) => {
+                        // not sure if this line is really necessary, seems occasionally helpful
+                        // with the error that keeps getting thrown from this (the error doesn't
+                        // seem to effect functionality? Not sure.)
                         std::thread::sleep(std::time::Duration::from_millis(300));
                         panic!("created a new config file at ~/.config/rodeo/rodeo.toml, you must populate it for rodeo to function.")
                     }
@@ -56,18 +59,18 @@ fn main() -> std::io::Result<()> {
     let command = if args.len() > 1 {
         args.nth(1).unwrap_or("none".to_owned())
     } else {
-        println!("no command provided. Stop.");
         "none".to_owned()
     };
 
     match &command[..] {
         "deploy" | "d" => settings.deploy(),
         "collect" | "c" => settings.collect(),
+        "list" | "ls" => settings.list_programs(),
         "sync-local" | "sync_local" | "local_sync" | "local-sync" | "lsync" => settings.sync_local(),
         "sync-remote" | "sync_remote" | "remote_sync" | "remote-sync" | "rsync" => settings.sync_remote(),
         "sync-full" | "sync_full" | "full_sync" | "full-sync" | "fsync" => settings.sync_full(),
         "help" | "h" => print_help(),
-        _ => println!("invalid command \"{}\". Stop.", command),
+        _ => print_help(),
     }
 
     Ok(())
