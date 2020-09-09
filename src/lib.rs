@@ -1,4 +1,4 @@
-mod options;
+pub mod config;
 
 use std::fs;
 use std::path;
